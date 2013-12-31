@@ -163,17 +163,10 @@ namespace base64{
         switch (slen - n) {
           case 1:
             a = src[i + 0] & 0xff;
-            printf("%d\n",a);
-            printf("%d\n",k);
-            printf("%x\n",a >> 2);
-            printf("%x\n",(a & 3) << 4);
-            dst[k + 0] = a >> 2;
-            // printf("%0x\n",*(unsigned int *)dst);
-            dst[k + 1] = (a & 0x3) << 4;
-            // printf("%0x\n",*(unsigned int *)dst);
-            // dst[k + 2] = '=';
-            // dst[k + 3] = '=';
-            printf("%0x\n",*(unsigned int *)dst);
+            dst[k + 0] = table[a >> 2];
+            dst[k + 1] = table[(a & 0x3) << 4];
+            dst[k + 2] = '=';
+            dst[k + 3] = '=';
             break;
 
           case 2:
@@ -194,16 +187,14 @@ namespace base64{
   using std::make_tuple;
   template<class T>
   using up = std::unique_ptr<T>;
-  tuple<up<char>, size_t> encode(const char * src,size_t src_l){
-    auto dst_l = base64_encoded_size(src_l);
-    up<char> dst(new char(dst_l));
+  void encode(const char * src,size_t src_l, up<char []> & dst, size_t & dst_l){
+    dst_l = base64_encoded_size(src_l);
+    dst.reset(new char[dst_l]);
     base64_encode(src,src_l,dst.get(),dst_l);
-    return make_tuple(std::move(dst),dst_l);
   }
-  tuple<up<char>, size_t> decode(const char * src,size_t src_l){
-    auto dst_l = base64_decoded_size(src,src_l);
-    up<char> dst(new char(dst_l));
+  void decode(const char * src,size_t src_l, up<char []> & dst, size_t & dst_l){
+    dst_l = base64_decoded_size(src,src_l);
+    dst.reset(new char[dst_l]);
     base64_decode(dst.get(),dst_l,src,src_l);
-    return make_tuple(std::move(dst),dst_l);
   }
 }

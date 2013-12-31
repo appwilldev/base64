@@ -2,8 +2,15 @@
 #include <cstring>
 #include <iostream>
 #include <string>
+#include <stdio.h>
 int main(int,char * argv[]){
-    auto re = base64::encode(argv[1],strlen(argv[1]));
-    char * tmp = std::get<0>(re).get();
-    std::cout << std::string(tmp,std::get<1>(re)) << "\n";
+    std::unique_ptr<char []> foo;
+    size_t foo_l;
+    base64::encode(argv[1],strlen(argv[1]),foo,foo_l);
+    std::cout << std::string(foo.get(),foo_l) << "\n";
+
+    std::unique_ptr<char []> bar;
+    size_t bar_l;
+    base64::decode(foo.get(),foo_l,bar,bar_l);
+    std::cout << std::string(bar.get(),bar_l) << "\n";
 }

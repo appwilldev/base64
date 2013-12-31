@@ -4,8 +4,7 @@
 #include <tuple>
 
 namespace base64{
-  using std::tuple;
-  using std::make_tuple;
-  std::tuple<std::unique_ptr<char>, size_t> encode(const char * src,size_t src_l);
-  std::tuple<std::unique_ptr<char>, size_t> decode(const char * src,size_t src_l);
+  using std::unique_ptr;
+  void encode(const char * src,size_t const src_l,unique_ptr<char []> & dst, size_t & dst_l);
+  void decode(const char * src,size_t const src_l,unique_ptr<char []> & dst,size_t & dst_l);
 }
